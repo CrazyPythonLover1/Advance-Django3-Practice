@@ -2,6 +2,111 @@
 {% block title %}My Blog{% endblock %}
 {% block content %}
 
+
+<main>
+
+    <!-- ---------------------- Site Content -------------------------->
+
+    <section class="container">
+        <div class="site-content">
+            <div class="posts" style="border-right: 1px solid #ddd;">
+                {% for obj in posts %}
+                <div class="post-content" style="display: flex; flex-direction: row;" >
+                    <div class="post-image">
+                        <div style="width: 18rem; height: 18rem; ">
+                            <img  src="{{ obj.thumbnail.url }}" class="img" alt="blog1">
+                        </div>
+                        
+                    </div>
+                    <div class="post-title">
+                        <a href=" {{ obj.get_absolute_url }} "> {{ obj.title }} </a>
+                        <p>
+                            {{ obj.overview|linebreaks|truncatechars:200 }}
+                        </p>
+                        <button class="btn post-btn"> <a href="{{ obj.get_absolute_url }}"> Read More </a> &nbsp;
+                            <i class="fas fa-arrow-right"></i></button>
+
+                            <p class="tags">
+                                Tags:
+                                {% for tag in obj.tags.all %}
+                                <a href="{% url "blog:post_list_by_tag" tag.slug %}">
+                                {{ tag.name }}
+                                </a>
+                                {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                                </p>
+                    </div>
+                </div>
+               
+                <hr>
+
+                {% endfor %}
+
+
+                {% include "pagination.html" with page=object_list %}
+            </div>
+            <aside class="sidebar">
+                <div class="category">
+                    <h2>Category</h2>
+                    <ul class="category-list">
+                        {% for tag in tags %}
+                        <li class="list-items" data-aos="fade-left" data-aos-delay="100">
+                            <a href="{% url 'blog:post_list_by_tag' tag.slug %}">
+                                {{ tag.name }}
+                                </a>
+                            <span>( {{ tag.tags__name__count }} )</span>
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <div class="popular-post">
+                    <h2>Recent Post</h2>
+
+
+                    {% for obj in recent %}
+                    <div class="post-content" data-aos="flip-up" data-aos-delay="200">
+                        <div class="post-image">
+                            <div>
+                                <img src=" {{ obj.thumbnail.url }} " class="img" alt="blog1">
+                            </div>
+                            <div class="post-info flex-row">
+                                <span><i class="fas fa-calendar-alt text-gray"></i>&nbsp;&nbsp;
+                                    {{ obj.timestamp|timesince}}
+                                </span>
+                                <span>2 Comments</span>
+                            </div>
+                        </div>
+                        <div class="post-title">
+                            <a href=" {{ obj.get_absolute_url }} "> {{ obj.title }} </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+
+
+                </div>
+                <div class="newsletter" data-aos="fade-up" data-aos-delay="300">
+                    <h2>Newsletter</h2>
+                    <div class="form-element">
+                        <input type="text" class="input-element" placeholder="Email">
+                        <button class="btn form-btn">Subscribe</button>
+                    </div>
+                </div>
+               
+            </aside>
+        </div>
+
+
+    </section>
+
+
+    <!-- -----------x---------- Site Content -------------x------------>
+
+</main>
+
+
+<!-- 
 <main>
     <h1>My Blog</h1>
 
@@ -50,7 +155,7 @@
     <aside>
        
     </aside>
-</main>
+</main> -->
 
 
 

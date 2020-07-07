@@ -1,7 +1,217 @@
 {% extends "blog/base.html" %}
+{% load static %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
-<h1>{{ post.title }}</h1>
+
+
+<main>
+  <section class="container">
+    <div class="site-content">
+      <div class="posts" style="">
+
+        <div class="post-content" data-aos="zoom-in" data-aos-delay="200">
+          <div class="post-image">
+            <div>
+              <img src=" {{ post.thumbnail.url }} " class="img" alt="blog1">
+            </div>
+            
+          </div>
+          <div class="post-title">
+            <a href=""> {{ post.title }}</a>
+            <p style="text-align: justify;">
+              
+              {% if post.incredient_pdf %}
+      <div style="">
+        <div class="incredient" style=" width:20rem; height:35rem;overflow-x: scroll;overflow-y: scroll; float: right" >
+          <img src=" {{ post.incredient_pdf.url }} " class="img" alt="blog1">
+        </div>
+      </div>
+              
+              {% endif %}
+                
+              
+              
+              {{ post.body|linebreaks }}
+              
+            </p>
+            <h5 style="display: flex; flex-direction: row; width: 100%; "> Was this post helpful?
+              <div class="like-unlike">
+                <form style="display: flex; flex-direction: row; margin-top:-.2rem;"
+                  action="" method="POST">
+                  {% csrf_token %}
+                  <div style="display: flex; flex-direction: column; align-items: center; margin-right: 1rem;" class="like">
+                              <button type="submit" name="post_id" value=" {{post.id}} " style="border:none;background:none;">
+                              <i style=" border: 1px solid #ddd; padding:.3rem; margin-bottom:.2rem;" class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            </button>
+                              <span> {{ total_likes }} 44 </span>
+                            </div>
+                            
+
+                            <div style="display: flex; flex-direction: column; align-items: center; margin-right: 1rem;" class="like">
+                              <button type="submit" name="post_unlike_id" value=" {{post.id}} " style="border:none;background:none;">
+                              <i style=" border: 1px solid #ddd; padding:.3rem; margin-bottom:.2rem;" class="fa fa-thumbs-down" aria-hidden="true"></i>
+                            </button>
+                              <span> {{ total_unlikes }} 0  </span>
+                            </div>
+
+                  <!-- {% if liked %}
+                  <div style="display: flex; flex-direction: row; align-items: center; margin-right: 1rem;"
+                    class="like">
+                    <button type="submit" name="post_id" value=" {{post.id}} " style="border:none;background:none;">
+                      <i style=" border: 1px solid #ddd; padding:.3rem; margin-bottom:.2rem;" class="fa fa-thumbs-down"
+                        aria-hidden="true"></i>
+                    </button>
+                    <span> {{ total_likes }} likes </span>
+                  </div>
+
+
+
+                  {% else %}
+                  <div style="display: flex; flex-direction: row; align-items: center; margin-right: 1rem;"
+                    class="like">
+                    <button type="submit" name="post_id" value=" {{post.id}} " style="border:none;background:none;">
+                      <i style=" border: 1px solid #ddd; padding:.3rem; margin-bottom:.2rem;" class="fa fa-thumbs-up"
+                        aria-hidden="true"></i>
+                    </button>
+                    <span> {{ total_likes }} likes </span>
+                  </div>
+
+
+                  {% endif %} -->
+                </form>
+              </div>
+            </h5>
+
+            
+          </div>
+        </div>
+        <hr>
+
+        <header>
+          <!-- <h3 class="h6">Post Comments<span class="no-of-comments">({{ post.approve_comments.count }})</span></h3> -->
+        </header>
+
+
+
+        <div class="add-comment">
+          <header>
+            <h3 class="h6">Leave a reply</h3>
+          </header>
+          <form method="POST" action="." class="form-control">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-control col-md-12" ">
+                      <div class=" fb-comments" data-href="http://127.0.0.1:8000/{{post.publish.day}}/{{post.slug}}" data-numposts="5"
+                data-width=""></div>
+
+
+          
+            </div>
+            <div class="form-group col-md-12">
+              <!-- <button style="margin: 20px 0px;" type="submit" class="btn form-btn">Submit Comment</button> -->
+            </div>
+        </div>
+        </form>
+
+        <div style="margin: 20px auto 20px 0;" class="fb-share-button" data-href="http://127.0.0.1:8000/{{post.publish.day}}/{{post.slug}}"
+          data-layout="button_count" data-size="large"><a target="_blank"
+            href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2Fpost%2F9%2F&amp;src=sdkpreparse"
+            class="fb-xfbml-parse-ignore">Share</a></div>
+
+
+{% if similar_posts %}
+<div class="blog">
+    <header>
+      <h3 class="h6">Related Post</h3>
+    </header>
+    <h2 class="latest-post">  </h2>
+    <div class="container" style="">
+
+      {% for related in similar_posts %}
+      <div class="blog-content" data-aos="fade-right" data-aos-delay="200">
+        <img src="{{ related.thumbnail.url }}" alt="post-1">
+        <div class="blog-title">
+          <h3> <a href=" {{ related.get_absolute_url }} ">  {{ related.title|truncatechars:25 }} </a>  </h3>
+          <!-- <button class="btn btn-blog"> {{ related.categories }} </button>
+                    <span>2 minutes</span> -->
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% endif %}
+    
+            
+
+      </div>
+
+    </div>
+
+    <aside class="sidebar">
+      <div class="category">
+        <h2>Category</h2>
+        <ul class="category-list">
+            {% for tag in tags %}
+            <li  class="list-items" data-aos="fade-left" data-aos-delay="100">
+                <a style="margin:auto;" href="{% url 'blog:post_list_by_tag' tag.slug %}">
+                    {{ tag.name }}
+                    </a>
+                <!-- <span>( )</span> -->
+            </li>
+            {% endfor %}
+        </ul>
+      </div>
+      <div class="popular-post">
+        <h2>Recent Post</h2>
+
+
+        {% for obj in recent %}
+        <div class="post-content" data-aos="flip-up" data-aos-delay="200">
+          <div class="post-image">
+            <div>
+              <img src=" {{ obj.thumbnail.url }} " class="img" alt="blog1">
+            </div>
+            <div class="post-info flex-row">
+              <span><i class="fas fa-calendar-alt text-gray"></i>&nbsp;&nbsp;
+                {{ obj.timestamp|timesince}}
+              </span>
+              <span>2 Comments</span>
+            </div>
+          </div>
+          <div class="post-title">
+            <a href=" {{ obj.get_absolute_url }} "> {{ obj.title }} </a>
+          </div>
+        </div>
+        {% endfor %}
+
+
+
+      </div>
+
+      <div class="newsletter" data-aos="fade-up" data-aos-delay="300">
+        <h2>Newsletter</h2>
+        <div class="form-element">
+          <input type="text" class="input-element" placeholder="Email">
+          <button class="btn form-btn">Subscribe</button>
+        </div>
+      </div>
+  
+    </aside>
+    </div>
+  </section>
+</main>
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+<!-- <h1>{{ post.title }}</h1>
 <p class="date">
 Published {{ post.publish }} by {{ post.author }}
 </p>
@@ -16,6 +226,6 @@ Published {{ post.publish }} by {{ post.author }}
 </p>
 {% empty %}
 There are no similar posts yet.
-{% endfor %}
+{% endfor %} -->
 
-{% endblock %}
+
