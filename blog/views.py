@@ -13,12 +13,13 @@ from django.core.mail import send_mail
 
 def post_list(request, tag_slug=None):
     object_list = Post.published.all()
+    recent = Post.objects.order_by('-publish')[0:30]
     tag = None
-    tags = Post.tags.all
+    tags = Post.tags.all()
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
         object_list = object_list.filter(tags__in=[tag])
-    paginator   = Paginator(object_list, 3)
+    paginator   = Paginator(object_list, 2)
     page = request.GET.get('page')
     try:
         posts = paginator.page(page)
@@ -31,7 +32,8 @@ def post_list(request, tag_slug=None):
     {'page':page,
     'posts': posts,
     'tag':tag,  
-    'tags':tags})
+    'tags':tags,
+    'recent':recent,})
 
 def post_detail(request, year,month,day,post):
     post = get_object_or_404(Post,slug=post,
@@ -43,9 +45,15 @@ def post_detail(request, year,month,day,post):
     similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
     similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags','-publish')[:4]
 
+
+    recent = Post.objects.order_by('-publish')[0:30]
+    tags = Post.tags.all()
+
     return render(request, 'blog/post/detail.html',
                             {'post':post,
-                            'similar_posts': similar_posts})                           
+                            'similar_posts': similar_posts,  
+                            'tags':tags,
+                            'recent':recent,})                         
 
 def post_share(request,post_id):
     # Retrieve post by id

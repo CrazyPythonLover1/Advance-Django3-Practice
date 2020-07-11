@@ -126,9 +126,21 @@ STATIC_URL = '/static/'
 
 
 
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mainulislamfaruqi@gmail.com'
 EMAIL_HOST_PASSWORD = '01795115755MIF'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static'),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR,"static-in-env")
+
+MEDIA_URL  = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+
+
 
